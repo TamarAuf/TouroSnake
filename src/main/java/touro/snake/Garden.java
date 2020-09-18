@@ -12,10 +12,13 @@ public class Garden {
     private final Snake snake;
     private final FoodFactory foodFactory;
     private Food food;
+    private final RockFactory rockFactory;
+    private Rock rock;
 
-    public Garden(Snake snake, FoodFactory foodFactory) {
+    public Garden(Snake snake, FoodFactory foodFactory, RockFactory rockFactory) {
         this.snake = snake;
         this.foodFactory = foodFactory;
+        this.rockFactory = rockFactory;
     }
 
     public Snake getSnake() {
@@ -26,6 +29,10 @@ public class Garden {
         return food;
     }
 
+    public Rock getRock() {
+        return rock;
+    }
+
     /**
      * Moves the snake, checks to see if food has been eaten and creates food if necessary
      *
@@ -34,6 +41,7 @@ public class Garden {
     public boolean advance() {
         if (moveSnake()) {
             createFoodIfNecessary();
+            createRockIfNecessary();
             return true;
         }
         return false;
@@ -48,7 +56,7 @@ public class Garden {
         snake.move();
 
         //if collides with wall or self
-        if (!snake.inBounds() || snake.eatsSelf()) {
+        if (!snake.inBounds() || snake.eatsSelf() || hitsRock()) {
             return false;
         }
 
@@ -58,8 +66,15 @@ public class Garden {
             snake.grow();
             //remove food
             food = null;
+            rock = null;
         }
         return true;
+    }
+
+    public boolean hitsRock() {
+        Square head = snake.getHead();
+
+        return head.equals(rock);
     }
 
     /**
@@ -73,6 +88,21 @@ public class Garden {
             //if new food on snake, put it somewhere else
             while (snake.contains(food)) {
                 food = foodFactory.newInstance();
+            }
+        }
+    }
+
+    /**
+     * Creates a Rock if there isn't one, making sure it's not already on a Square occupied by the Snake.
+     */
+    void createRockIfNecessary() {
+        //if snake ate food, create new rock
+        if (rock == null) {
+            rock = rockFactory.newInstance();
+
+            //if new food on snake, put it somewhere else
+            while (snake.intersects(rock)) {
+                rock = rockFactory.newInstance();
             }
         }
     }

@@ -104,6 +104,14 @@ public class Snake {
     }
 
     /**
+     * @param rock
+     * @return true if the Rock intersects with the Snake, otherwise false.
+     */
+    public boolean intersects(Rock rock) {
+        return squares.contains(rock);
+    }
+
+    /**
      * @return true if the Snake is within the bounds of the Garden, otherwise false.
      */
     public boolean inBounds() {
@@ -131,7 +139,6 @@ public class Snake {
         }
         return false;
     }
-
 
     public boolean getGrow() {
         return grow;
