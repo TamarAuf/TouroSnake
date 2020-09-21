@@ -78,30 +78,30 @@ public class Garden {
     }
 
     /**
-     * Creates a Food if there isn't one, making sure it's not already on a Square occupied by the Snake.
+     * Creates a Food if there isn't one, making sure it's not already on a Square occupied by the Snake or rock.
      */
     void createFoodIfNecessary() {
         //if snake ate food, create new one
         if (food == null) {
             food = foodFactory.newInstance();
 
-            //if new food on snake, put it somewhere else
-            while (snake.contains(food)) {
+            //if new food on snake or rock, put it somewhere else
+            while (snake.contains(food) || food.equals(rock)) {
                 food = foodFactory.newInstance();
             }
         }
     }
 
     /**
-     * Creates a Rock if there isn't one, making sure it's not already on a Square occupied by the Snake.
+     * Creates a Rock if there isn't one, making sure it's not already on a Square occupied by the Snake or food.
      */
     void createRockIfNecessary() {
         //if snake ate food, create new rock
         if (rock == null) {
             rock = rockFactory.newInstance();
 
-            //if new food on snake, put it somewhere else
-            while (snake.intersects(rock)) {
+            //if new rock on snake or food, put it somewhere else
+            while (snake.intersects(rock) || rock.equals(food)) {
                 rock = rockFactory.newInstance();
             }
         }

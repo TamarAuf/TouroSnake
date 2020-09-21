@@ -45,4 +45,22 @@ public class GardenTest {
         verify(foodFactory).newInstance();
         assertNotNull(garden.getFood());
     }
+
+    @Test
+    public void createRockIfNecessary() {
+
+        //given
+        Snake snake = mock(Snake.class);
+        FoodFactory foodFactory = mock(FoodFactory.class);
+        RockFactory rockFactory = mock(RockFactory.class);
+        Garden garden = new Garden(snake, foodFactory, rockFactory);
+        when(rockFactory.newInstance()).thenReturn(mock(Rock.class));
+
+        //when
+        garden.createRockIfNecessary();
+
+        //then
+        verify(rockFactory).newInstance();
+        assertNotNull(garden.getRock());
+    }
 }

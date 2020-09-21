@@ -95,4 +95,27 @@ public class GardenViewTest {
         //then
         verifyNoInteractions(g);
     }
+
+    @Test
+    public void paintRock() {
+        //given
+        Garden garden = mock(Garden.class);
+        GardenView view = new GardenView(garden);
+
+        when(garden.getRock()).thenReturn(mock(Rock.class));
+
+        Rock rock = garden.getRock();
+        when(rock.getX()).thenReturn(200);
+        when(rock.getY()).thenReturn(100);
+        int x = rock.getX() * GardenView.CELL_SIZE;
+        int y = rock.getY() * GardenView.CELL_SIZE;
+
+        Graphics g = mock(Graphics.class);
+
+        //when
+        view.paintRock(g);
+
+        //then
+        verify(g).fillRect(x,y, GardenView.CELL_SIZE, GardenView.CELL_SIZE);
+    }
 }
