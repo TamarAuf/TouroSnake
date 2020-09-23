@@ -55,8 +55,8 @@ public class Garden {
     boolean moveSnake() {
         snake.move();
 
-        //if collides with wall or self
-        if (!snake.inBounds() || snake.eatsSelf() || hitsRock()) {
+        //if collides with wall, self, or rock
+        if (!snake.inBounds() || snake.eatsSelf() || rockHit()) {
             return false;
         }
 
@@ -71,7 +71,7 @@ public class Garden {
         return true;
     }
 
-    public boolean hitsRock() {
+    public boolean rockHit() {
         Square head = snake.getHead();
 
         return head.equals(rock);
@@ -101,7 +101,7 @@ public class Garden {
             rock = rockFactory.newInstance();
 
             //if new rock on snake or food, put it somewhere else
-            while (snake.intersects(rock) || rock.equals(food)) {
+            while (snake.contains(rock) || rock.equals(food)) {
                 rock = rockFactory.newInstance();
             }
         }

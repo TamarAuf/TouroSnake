@@ -96,19 +96,11 @@ public class Snake {
     }
 
     /**
-     * @param food
-     * @return true if the Food intersects with the Snake, otherwise false.
+     * @param square
+     * @return true if the Square intersects with the Snake, otherwise false.
      */
-    public boolean contains(Food food) {
-        return squares.contains(food);
-    }
-
-    /**
-     * @param rock
-     * @return true if the Rock intersects with the Snake, otherwise false.
-     */
-    public boolean intersects(Rock rock) {
-        return squares.contains(rock);
+    public boolean contains(Square square) {
+        return squares.contains(square);
     }
 
     /**
