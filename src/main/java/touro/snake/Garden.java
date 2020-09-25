@@ -1,8 +1,12 @@
 package touro.snake;
 
 import java.util.List;
-
 import static java.lang.Math.abs;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.InputStream;
+
 
 /**
  * A model that contains the Snake and Food and is responsible for logic of moving the Snake,
@@ -18,107 +22,123 @@ public class Garden {
     private final FoodFactory foodFactory;
     private Food food;
     private final RockFactory rockFactory;
+    private Clip clip;
 
-    public Garden(Snake snake, FoodFactory foodFactory, RockFactory rockFactory) {
+    public Garden(Snake snake, FoodFactory foodFactory, RockFactory rockFactory, Clip clip) {
         this.snake = snake;
         this.foodFactory = foodFactory;
         this.rockFactory = rockFactory;
-    }
-
-    public Snake getSnake() {
-        return snake;
-    }
-
-    public Food getFood() {
-        return food;
-    }
-
-    public List<Rock> getRocks() {
-        return rockFactory.getRocks();
-    }
-
-    /**
-     * Moves the snake, checks to see if food has been eaten and creates food if necessary
-     *
-     * @return true if the snake is still alive, otherwise false.
-     */
-    public boolean advance() {
-        if (moveSnake()) {
-            createFoodIfNecessary();
-            createRockIfNecessary();
-            return true;
+        this.clip = clip;
         }
-        return false;
-    }
 
-    /**
-     * Moves the Snake, eats the Food or collides with the wall (edges of the Garden), or eats self.
-     *
-     * @return true if the Snake is still alive, otherwise false.
-     */
-    boolean moveSnake() {
-        snake.move();
+        public Snake getSnake () {
+            return snake;
+        }
 
-        //if collides with wall, self, or rock
-        if (!snake.inBounds() || snake.eatsSelf() || rockHit()) {
+        public Food getFood () {
+            return food;
+        }
+
+        public List<Rock> getRocks () {
+            return rockFactory.getRocks();
+        }
+
+        /**
+         * Moves the snake, checks to see if food has been eaten and creates food if necessary
+         *
+         * @return true if the snake is still alive, otherwise false.
+         */
+        public boolean advance () {
+            if (moveSnake()) {
+                createFoodIfNecessary();
+                createRockIfNecessary();
+                return true;
+            }
             return false;
         }
 
-        //if snake eats the food
-        if (snake.getHead().equals(food)) {
-            //add square to snake
-            snake.grow();
-            //remove food
-            food = null;
-            //increment rockCount
-            rockCount++;
+        /**
+         * Moves the Snake, eats the Food or collides with the wall (edges of the Garden), or eats self.
+         *
+         * @return true if the Snake is still alive, otherwise false.
+         */
+        boolean moveSnake () {
+            snake.move();
+
+            //if collides with wall, self, or rock
+            if (!snake.inBounds() || snake.eatsSelf() || rockHit()) {
+                return false;
+            }
+
+            //if snake eats the food
+            if (snake.getHead().equals(food)) {
+                //add square to snake
+                snake.grow();
+                //make noise
+                playSound();
+                //remove food
+                food = null;
+                //increment rockCount
+                rockCount++;
+            }
+            return true;
         }
-        return true;
-    }
 
-    public boolean rockHit() {
-        Square head = snake.getHead();
-        for(Rock rock : rockFactory.getRocks()) {
-            return head.equals(rock);
+        public boolean rockHit () {
+            Square head = snake.getHead();
+            for (Rock rock : rockFactory.getRocks()) {
+                return head.equals(rock);
+            }
+            return false;
         }
-        return false;
-    }
 
-    /**
-     * Creates a Food if there isn't one, making sure it's not already on a Square occupied by the Snake or rock.
-     */
-    void createFoodIfNecessary() {
-        //if snake ate food, create new one
-        if (food == null) {
-            food = foodFactory.newInstance();
-
-            //if new food on snake or rock, put it somewhere else
-            while (snake.contains(food) || food.equals(rockFactory.getLatestRock())) {
+        /**
+         * Creates a Food if there isn't one, making sure it's not already on a Square occupied by the Snake or rock.
+         */
+        void createFoodIfNecessary () {
+            //if snake ate food, create new one
+            if (food == null) {
                 food = foodFactory.newInstance();
+
+                //if new food on snake or rock, put it somewhere else
+                while (snake.contains(food) || food.equals(rockFactory.getLatestRock())) {
+                    food = foodFactory.newInstance();
+                }
             }
         }
-    }
 
-    /**
-     * Creates a Rock if there isn't one, making sure it's not already on a Square occupied by the Snake or food.
-     */
-    void createRockIfNecessary() {
-        //if snake ate food, create additional rock
-        if (rockCount > rockFactory.getRocks().size()) {
-            rockFactory.addRock();
-            Rock lastRock = rockFactory.getLatestRock();
-            //get x and y distances between snake head and latest rock
-            int xDistanceFromHead = abs(lastRock.getX() - snake.getHead().getX());
-            int yDistanceFromHead = abs(lastRock.getY() - snake.getHead().getY());
-            //if new rock on snake or food or too close in front of snake put it somewhere else
-            while (snake.contains(lastRock) || food.equals(lastRock)
-                    || (xDistanceFromHead<2 && yDistanceFromHead == 0)
-                    || (yDistanceFromHead<2 && xDistanceFromHead == 0)) {
-                rockFactory.removeRock();
+        /**
+         * Creates a Rock if there isn't one, making sure it's not already on a Square occupied by the Snake or food.
+         */
+        void createRockIfNecessary () {
+            //if snake ate food, create additional rock
+            if (rockCount > rockFactory.getRocks().size()) {
                 rockFactory.addRock();
-                lastRock = rockFactory.getLatestRock();
+                Rock lastRock = rockFactory.getLatestRock();
+                //get x and y distances between snake head and latest rock
+                int xDistanceFromHead = abs(lastRock.getX() - snake.getHead().getX());
+                int yDistanceFromHead = abs(lastRock.getY() - snake.getHead().getY());
+                //if new rock on snake or food or too close in front of snake put it somewhere else
+                while (snake.contains(lastRock) || food.equals(lastRock)
+                        || (xDistanceFromHead < 2 && yDistanceFromHead == 0)
+                        || (yDistanceFromHead < 2 && xDistanceFromHead == 0)) {
+                    rockFactory.removeRock();
+                    rockFactory.addRock();
+                    lastRock = rockFactory.getLatestRock();
+                }
+            }
+        }
+     /*
+     *Plays sound from.wav file found in resources folder
+     */
+        private void playSound () {
+            try {
+                clip.setMicrosecondPosition(0); //restart clip
+                clip.start();
+
+            } catch (Exception e) {
+                System.out.println("Error found when trying to play EatNoise");
+                e.printStackTrace();
             }
         }
     }
-
-}
