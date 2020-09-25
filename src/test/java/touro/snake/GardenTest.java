@@ -1,6 +1,10 @@
 package touro.snake;
 
 import org.junit.Test;
+
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -54,13 +58,14 @@ public class GardenTest {
         FoodFactory foodFactory = mock(FoodFactory.class);
         RockFactory rockFactory = mock(RockFactory.class);
         Garden garden = new Garden(snake, foodFactory, rockFactory);
-        when(rockFactory.newInstance()).thenReturn(mock(Rock.class));
+
+        when(snake.getHead()).thenReturn(mock(Square.class));
 
         //when
         garden.createRockIfNecessary();
 
         //then
-        verify(rockFactory).newInstance();
-        assertNotNull(garden.getRock());
+        verify(rockFactory).getRocks();
+        assertNotNull(rockFactory.getRocks());
     }
 }

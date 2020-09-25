@@ -1,5 +1,9 @@
 package touro.snake;
 
+import java.util.List;
+
+import static java.lang.Math.abs;
+
 /**
  * A model that contains the Snake and Food and is responsible for logic of moving the Snake,
  * seeing that food has been eaten and generating new food.
@@ -8,12 +12,12 @@ public class Garden {
 
     public static final int WIDTH = 100;
     public static final int HEIGHT = 40;
+    private int rockCount = 0;
 
     private final Snake snake;
     private final FoodFactory foodFactory;
     private Food food;
     private final RockFactory rockFactory;
-    private Rock rock;
 
     public Garden(Snake snake, FoodFactory foodFactory, RockFactory rockFactory) {
         this.snake = snake;
@@ -29,8 +33,8 @@ public class Garden {
         return food;
     }
 
-    public Rock getRock() {
-        return rock;
+    public List<Rock> getRocks() {
+        return rockFactory.getRocks();
     }
 
     /**
@@ -66,15 +70,19 @@ public class Garden {
             snake.grow();
             //remove food
             food = null;
-            rock = null;
+            //increment rockCount
+            rockCount++;
         }
         return true;
     }
 
     public boolean rockHit() {
+        boolean retVal = false;
         Square head = snake.getHead();
-
-        return head.equals(rock);
+        for(Rock rock : rockFactory.getRocks()) {
+            retVal = head.equals(rock);
+        }
+        return retVal;
     }
 
     /**
@@ -86,7 +94,7 @@ public class Garden {
             food = foodFactory.newInstance();
 
             //if new food on snake or rock, put it somewhere else
-            while (snake.contains(food) || food.equals(rock)) {
+            while (snake.contains(food) || food.equals(rockFactory.getLatestRock())) {
                 food = foodFactory.newInstance();
             }
         }
@@ -97,12 +105,16 @@ public class Garden {
      */
     void createRockIfNecessary() {
         //if snake ate food, create new rock
-        if (rock == null) {
-            rock = rockFactory.newInstance();
-
-            //if new rock on snake or food, put it somewhere else
-            while (snake.contains(rock) || rock.equals(food)) {
-                rock = rockFactory.newInstance();
+        if (rockCount > rockFactory.getRocks().size()) {
+            rockFactory.addRock();
+            int xDistanceFromFace = abs(rockFactory.getLatestRock().getX() - snake.getHead().getX());
+            int yDistanceFromFace = abs(rockFactory.getLatestRock().getY() - snake.getHead().getY());
+            //if new rock on snake or food or too close in front of snake put it somewhere else
+            while (snake.contains(rockFactory.getLatestRock()) || food.equals(rockFactory.getLatestRock())
+                    || (xDistanceFromFace<2 && yDistanceFromFace == 0)
+                    || (yDistanceFromFace<2 && xDistanceFromFace == 0)) {
+                rockFactory.removeRock();
+                rockFactory.addRock();
             }
         }
     }

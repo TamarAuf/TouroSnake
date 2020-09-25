@@ -46,13 +46,9 @@ public class GardenView extends JComponent {
         }
     }
     void paintRock(Graphics g) {
-        if (garden.getRock() != null) {
-            Rock rock = garden.getRock();
-            g.setColor(Color.BLACK);
-
-            int x = rock.getX() * CELL_SIZE;
-            int y = rock.getY() * CELL_SIZE;
-            g.fillRect(x, y, CELL_SIZE, CELL_SIZE);
+        g.setColor(Color.BLACK);
+        for (Rock rock : garden.getRocks()) {
+            g.fillRect(rock.getX()*CELL_SIZE, rock.getY()*CELL_SIZE, CELL_SIZE, CELL_SIZE);
         }
     }
 }

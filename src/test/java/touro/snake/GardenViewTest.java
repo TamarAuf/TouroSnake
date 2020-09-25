@@ -101,14 +101,14 @@ public class GardenViewTest {
         //given
         Garden garden = mock(Garden.class);
         GardenView view = new GardenView(garden);
+        List<Rock> rocks = new ArrayList<>();
+        rocks.add(new Rock(10,20));
 
-        when(garden.getRock()).thenReturn(mock(Rock.class));
+        when(garden.getRocks()).thenReturn(rocks);
 
-        Rock rock = garden.getRock();
-        when(rock.getX()).thenReturn(200);
-        when(rock.getY()).thenReturn(100);
-        int x = rock.getX() * GardenView.CELL_SIZE;
-        int y = rock.getY() * GardenView.CELL_SIZE;
+        rocks = garden.getRocks();
+        int x = rocks.get(0).getX() * GardenView.CELL_SIZE;
+        int y = rocks.get(0).getY() * GardenView.CELL_SIZE;
 
         Graphics g = mock(Graphics.class);
 
