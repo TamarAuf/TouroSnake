@@ -77,12 +77,11 @@ public class Garden {
     }
 
     public boolean rockHit() {
-        boolean retVal = false;
         Square head = snake.getHead();
         for(Rock rock : rockFactory.getRocks()) {
-            retVal = head.equals(rock);
+            return head.equals(rock);
         }
-        return retVal;
+        return false;
     }
 
     /**
@@ -104,17 +103,20 @@ public class Garden {
      * Creates a Rock if there isn't one, making sure it's not already on a Square occupied by the Snake or food.
      */
     void createRockIfNecessary() {
-        //if snake ate food, create new rock
+        //if snake ate food, create additional rock
         if (rockCount > rockFactory.getRocks().size()) {
             rockFactory.addRock();
-            int xDistanceFromFace = abs(rockFactory.getLatestRock().getX() - snake.getHead().getX());
-            int yDistanceFromFace = abs(rockFactory.getLatestRock().getY() - snake.getHead().getY());
+            Rock lastRock = rockFactory.getLatestRock();
+            //get x and y distances between snake head and latest rock
+            int xDistanceFromHead = abs(lastRock.getX() - snake.getHead().getX());
+            int yDistanceFromHead = abs(lastRock.getY() - snake.getHead().getY());
             //if new rock on snake or food or too close in front of snake put it somewhere else
-            while (snake.contains(rockFactory.getLatestRock()) || food.equals(rockFactory.getLatestRock())
-                    || (xDistanceFromFace<2 && yDistanceFromFace == 0)
-                    || (yDistanceFromFace<2 && xDistanceFromFace == 0)) {
+            while (snake.contains(lastRock) || food.equals(lastRock)
+                    || (xDistanceFromHead<2 && yDistanceFromHead == 0)
+                    || (yDistanceFromHead<2 && xDistanceFromHead == 0)) {
                 rockFactory.removeRock();
                 rockFactory.addRock();
+                lastRock = rockFactory.getLatestRock();
             }
         }
     }
