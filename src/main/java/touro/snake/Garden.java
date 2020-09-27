@@ -87,7 +87,9 @@ public class Garden {
         public boolean rockHit () {
             Square head = snake.getHead();
             for (Rock rock : rockFactory.getRocks()) {
-                return head.equals(rock);
+                if (head.equals(rock)) {
+                    return true;
+                }
             }
             return false;
         }
