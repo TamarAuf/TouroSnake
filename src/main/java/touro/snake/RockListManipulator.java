@@ -4,14 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Factory class for creating new Rock objects within the Garden.
- */
-public class RockFactory {
+public class RockListManipulator {
 
-    /**
-     * @return a new Rock with random coordinates in the Garden
-     * Adds rock to rock list
+    /**Adds rock to rock list
      * Removes last rock from rock list
      */
 
@@ -35,5 +30,4 @@ public class RockFactory {
     public List<Rock> getRocks() {
         return rocks;
     }
-
 }

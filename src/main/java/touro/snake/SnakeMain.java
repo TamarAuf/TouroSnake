@@ -16,14 +16,14 @@ public class SnakeMain {
         SnakeHeadStateMachine snakeHeadStateMachine = new SnakeHeadStateMachine(Direction.West);
         Snake snake = new Snake(snakeHeadStateMachine);
         FoodFactory foodFactory = new FoodFactory();
-        RockFactory rockFactory = new RockFactory();
+        RockListManipulator rockListManipulator = new RockListManipulator();
 
         try {
             InputStream inputStream = Garden.class.getClassLoader().getResourceAsStream("EatNoise.wav");
             AudioInputStream audioIn = AudioSystem.getAudioInputStream(inputStream);
             Clip clip = AudioSystem.getClip();
             clip.open(audioIn);
-            Garden garden = new Garden(snake, foodFactory, rockFactory, clip);
+            Garden garden = new Garden(snake, foodFactory, clip, rockListManipulator);
             GardenView gardenView = new GardenView(garden);
             SnakeKeyListener snakeKeyListener = new SnakeKeyListener(snake);
 

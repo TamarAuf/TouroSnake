@@ -21,14 +21,14 @@ public class Garden {
     private final Snake snake;
     private final FoodFactory foodFactory;
     private Food food;
-    private final RockFactory rockFactory;
     private Clip clip;
+    private final RockListManipulator rockListManipulator;
 
-    public Garden(Snake snake, FoodFactory foodFactory, RockFactory rockFactory, Clip clip) {
+    public Garden(Snake snake, FoodFactory foodFactory, Clip clip, RockListManipulator rockListManipulator) {
         this.snake = snake;
         this.foodFactory = foodFactory;
-        this.rockFactory = rockFactory;
         this.clip = clip;
+        this.rockListManipulator = rockListManipulator;
         }
 
         public Snake getSnake () {
@@ -40,7 +40,7 @@ public class Garden {
         }
 
         public List<Rock> getRocks () {
-            return rockFactory.getRocks();
+            return rockListManipulator.getRocks();
         }
 
         /**
@@ -86,7 +86,7 @@ public class Garden {
 
         public boolean rockHit () {
             Square head = snake.getHead();
-            for (Rock rock : rockFactory.getRocks()) {
+            for (Rock rock : rockListManipulator.getRocks()) {
                 if (head.equals(rock)) {
                     return true;
                 }
@@ -103,7 +103,7 @@ public class Garden {
                 food = foodFactory.newInstance();
 
                 //if new food on snake or rock, put it somewhere else
-                while (snake.contains(food) || food.equals(rockFactory.getLatestRock())) {
+                while (snake.contains(food) || food.equals(rockListManipulator.getLatestRock())) {
                     food = foodFactory.newInstance();
                 }
             }
@@ -114,9 +114,9 @@ public class Garden {
          */
         void createRockIfNecessary () {
             //if snake ate food, create additional rock
-            if (rockCount > rockFactory.getRocks().size()) {
-                rockFactory.addRock();
-                Rock lastRock = rockFactory.getLatestRock();
+            if (rockCount > rockListManipulator.getRocks().size()) {
+                rockListManipulator.addRock();
+                Rock lastRock = rockListManipulator.getLatestRock();
                 //get x and y distances between snake head and latest rock
                 int xDistanceFromHead = abs(lastRock.getX() - snake.getHead().getX());
                 int yDistanceFromHead = abs(lastRock.getY() - snake.getHead().getY());
@@ -124,9 +124,9 @@ public class Garden {
                 while (snake.contains(lastRock) || food.equals(lastRock)
                         || (xDistanceFromHead < 2 && yDistanceFromHead == 0)
                         || (yDistanceFromHead < 2 && xDistanceFromHead == 0)) {
-                    rockFactory.removeRock();
-                    rockFactory.addRock();
-                    lastRock = rockFactory.getLatestRock();
+                    rockListManipulator.removeRock();
+                    rockListManipulator.addRock();
+                    lastRock = rockListManipulator.getLatestRock();
                 }
             }
         }

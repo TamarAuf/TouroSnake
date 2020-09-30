@@ -19,9 +19,9 @@ public class GardenTest {
         //given
         Snake snake = mock(Snake.class);
         FoodFactory foodFactory = mock(FoodFactory.class);
-        RockFactory rockFactory = mock(RockFactory.class);
+        RockListManipulator rockListManipulator = mock(RockListManipulator.class);
         Clip clip = mock(Clip.class);
-        Garden garden = new Garden(snake, foodFactory, rockFactory, clip);
+        Garden garden = new Garden(snake, foodFactory, clip, rockListManipulator);
 
         doReturn(true).when(snake).inBounds();
         doReturn(false).when(snake).eatsSelf();
@@ -39,9 +39,9 @@ public class GardenTest {
         //given
         Snake snake = mock(Snake.class);
         FoodFactory foodFactory = mock(FoodFactory.class);
-        RockFactory rockFactory = mock(RockFactory.class);
+        RockListManipulator rockListManipulator = mock(RockListManipulator.class);
         Clip clip = mock(Clip.class);
-        Garden garden = new Garden(snake, foodFactory, rockFactory, clip);
+        Garden garden = new Garden(snake, foodFactory, clip, rockListManipulator);
 
         when(foodFactory.newInstance()).thenReturn(mock(Food.class));
 
@@ -59,9 +59,9 @@ public class GardenTest {
         //given
         Snake snake = mock(Snake.class);
         FoodFactory foodFactory = mock(FoodFactory.class);
-        RockFactory rockFactory = mock(RockFactory.class);
+        RockListManipulator rockListManipulator = mock(RockListManipulator.class);
         Clip clip = mock(Clip.class);
-        Garden garden = new Garden(snake, foodFactory, rockFactory, clip);
+        Garden garden = new Garden(snake, foodFactory, clip, rockListManipulator);
 
         when(snake.getHead()).thenReturn(mock(Square.class));
 
@@ -69,8 +69,8 @@ public class GardenTest {
         garden.createRockIfNecessary();
 
         //then
-        verify(rockFactory).getRocks();
-        assertNotNull(rockFactory.getRocks());
+        verify(rockListManipulator).getRocks();
+        assertNotNull(rockListManipulator.getRocks());
     }
 
     public void playSound() {
@@ -80,8 +80,8 @@ public class GardenTest {
         Food food = new Food(50, 20);
         when(foodFactory.newInstance()).thenReturn(food);
         Clip clip = mock(Clip.class);
-        RockFactory rockFactory = mock(RockFactory.class);
-        Garden garden = new Garden(snake, foodFactory, rockFactory, clip);
+        RockListManipulator rockListManipulator = mock(RockListManipulator.class);
+        Garden garden = new Garden(snake, foodFactory, clip, rockListManipulator);
         List<Square> squares = List.of(new Square(50, 20));
 
         when(snake.inBounds()).thenReturn(true);
