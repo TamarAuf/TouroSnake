@@ -31,6 +31,7 @@ public class SnakeMain {
             thread.start();
             BackgroundSound backgroundSound = new BackgroundSound();
 
+
             new SnakeFrame(gardenView, snakeKeyListener, backgroundSound).setVisible(true);
         } catch(Exception e) {
             e.printStackTrace();
