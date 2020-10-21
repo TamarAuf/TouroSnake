@@ -19,9 +19,8 @@ public class GardenTest {
         //given
         Snake snake = mock(Snake.class);
         FoodFactory foodFactory = mock(FoodFactory.class);
-        RockListManipulator rockListManipulator = mock(RockListManipulator.class);
         Clip clip = mock(Clip.class);
-        Garden garden = new Garden(snake, foodFactory, clip, rockListManipulator);
+        Garden garden = new Garden(snake, foodFactory, clip);
 
         doReturn(true).when(snake).inBounds();
         doReturn(false).when(snake).eatsSelf();
@@ -39,9 +38,8 @@ public class GardenTest {
         //given
         Snake snake = mock(Snake.class);
         FoodFactory foodFactory = mock(FoodFactory.class);
-        RockListManipulator rockListManipulator = mock(RockListManipulator.class);
         Clip clip = mock(Clip.class);
-        Garden garden = new Garden(snake, foodFactory, clip, rockListManipulator);
+        Garden garden = new Garden(snake, foodFactory, clip);
 
         when(foodFactory.newInstance()).thenReturn(mock(Food.class));
 
@@ -59,9 +57,8 @@ public class GardenTest {
         //given
         Snake snake = mock(Snake.class);
         FoodFactory foodFactory = mock(FoodFactory.class);
-        RockListManipulator rockListManipulator = mock(RockListManipulator.class);
         Clip clip = mock(Clip.class);
-        Garden garden = new Garden(snake, foodFactory, clip, rockListManipulator);
+        Garden garden = new Garden(snake, foodFactory, clip);
 
         when(snake.getHead()).thenReturn(mock(Square.class));
 
@@ -69,8 +66,7 @@ public class GardenTest {
         garden.createRockIfNecessary();
 
         //then
-        verify(rockListManipulator).getRocks();
-        assertNotNull(rockListManipulator.getRocks());
+        assertNotNull(garden.getRocks());
     }
 
     public void playSound() {
@@ -80,8 +76,7 @@ public class GardenTest {
         Food food = new Food(50, 20);
         when(foodFactory.newInstance()).thenReturn(food);
         Clip clip = mock(Clip.class);
-        RockListManipulator rockListManipulator = mock(RockListManipulator.class);
-        Garden garden = new Garden(snake, foodFactory, clip, rockListManipulator);
+        Garden garden = new Garden(snake, foodFactory, clip);
         List<Square> squares = List.of(new Square(50, 20));
 
         when(snake.inBounds()).thenReturn(true);

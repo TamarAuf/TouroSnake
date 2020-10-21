@@ -1,5 +1,6 @@
 package touro.snake;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.lang.Math.abs;
@@ -8,6 +9,7 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import java.io.InputStream;
+import java.util.Random;
 
 
 /**
@@ -24,13 +26,14 @@ public class Garden {
     private final FoodFactory foodFactory;
     private Food food;
     private Clip clip;
-    private final RockListManipulator rockListManipulator;
+    private final Random rand = new Random();
+    private final List<Rock> rocks = new ArrayList<>();
+    private Rock latestRock;
 
-    public Garden(Snake snake, FoodFactory foodFactory, Clip clip, RockListManipulator rockListManipulator) {
+    public Garden(Snake snake, FoodFactory foodFactory, Clip clip)  {
         this.snake = snake;
         this.foodFactory = foodFactory;
         this.clip = clip;
-        this.rockListManipulator = rockListManipulator;
     }
 
     public Snake getSnake() {
@@ -41,8 +44,15 @@ public class Garden {
         return food;
     }
 
-    public List<Rock> getRocks() {
-        return rockListManipulator.getRocks();
+    public List<Rock> getRocks(){return rocks;}
+
+    public void addRock() {
+        latestRock = new Rock(rand.nextInt(Garden.WIDTH), rand.nextInt(Garden.HEIGHT));
+        rocks.add(latestRock);
+    }
+
+    public void removeRock() {
+        rocks.remove(latestRock);
     }
 
     /**
@@ -88,7 +98,7 @@ public class Garden {
 
     public boolean rockHit() {
         Square head = snake.getHead();
-        for (Rock rock : rockListManipulator.getRocks()) {
+        for (Rock rock : rocks) {
             if (head.equals(rock)) {
                 return true;
             }
@@ -105,7 +115,7 @@ public class Garden {
             food = foodFactory.newInstance();
 
             //if new food on snake or rock, put it somewhere else
-            while (snake.contains(food) || food.equals(rockListManipulator.getLatestRock())) {
+            while (snake.contains(food) || food.equals(latestRock)) {
                 food = foodFactory.newInstance();
             }
         }
@@ -116,19 +126,17 @@ public class Garden {
      */
     void createRockIfNecessary() {
         //if snake ate food, create additional rock
-        if (rockCount > rockListManipulator.getRocks().size()) {
-            rockListManipulator.addRock();
-            Rock lastRock = rockListManipulator.getLatestRock();
+        if (rockCount > rocks.size()) {
+            addRock();
             //get x and y distances between snake head and latest rock
-            int xDistanceFromHead = abs(lastRock.getX() - snake.getHead().getX());
-            int yDistanceFromHead = abs(lastRock.getY() - snake.getHead().getY());
+            int xDistanceFromHead = abs(latestRock.getX() - snake.getHead().getX());
+            int yDistanceFromHead = abs(latestRock.getY() - snake.getHead().getY());
             //if new rock on snake or food or too close in front of snake put it somewhere else
-            while (snake.contains(lastRock) || food.equals(lastRock)
+            while (snake.contains(latestRock) || food.equals(latestRock)
                     || (xDistanceFromHead < 2 && yDistanceFromHead == 0)
                     || (yDistanceFromHead < 2 && xDistanceFromHead == 0)) {
-                rockListManipulator.removeRock();
-                rockListManipulator.addRock();
-                lastRock = rockListManipulator.getLatestRock();
+                removeRock();
+                addRock();
             }
         }
     }
