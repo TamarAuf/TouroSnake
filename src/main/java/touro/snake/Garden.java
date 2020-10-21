@@ -75,6 +75,8 @@ public class Garden {
      * @return true if the Snake is still alive, otherwise false.
      */
     boolean moveSnake() {
+        snake.getStrategy().turnSnake(snake, this);
+
         snake.move();
 
         //if collides with wall, self, or rock
