@@ -31,15 +31,15 @@ public class Garden {
         this.rockListManipulator = rockListManipulator;
         }
 
-        public Snake getSnake () {
+        public Snake getSnake() {
             return snake;
         }
 
-        public Food getFood () {
+        public Food getFood() {
             return food;
         }
 
-        public List<Rock> getRocks () {
+        public List<Rock>getRocks () {
             return rockListManipulator.getRocks();
         }
 
@@ -48,7 +48,7 @@ public class Garden {
          *
          * @return true if the snake is still alive, otherwise false.
          */
-        public boolean advance () {
+        public boolean advance() {
             if (moveSnake()) {
                 createFoodIfNecessary();
                 createRockIfNecessary();
@@ -62,7 +62,7 @@ public class Garden {
          *
          * @return true if the Snake is still alive, otherwise false.
          */
-        boolean moveSnake () {
+        boolean moveSnake() {
             snake.move();
 
             //if collides with wall, self, or rock
@@ -84,7 +84,7 @@ public class Garden {
             return true;
         }
 
-        public boolean rockHit () {
+        public boolean rockHit() {
             Square head = snake.getHead();
             for (Rock rock : rockListManipulator.getRocks()) {
                 if (head.equals(rock)) {
@@ -97,7 +97,7 @@ public class Garden {
         /**
          * Creates a Food if there isn't one, making sure it's not already on a Square occupied by the Snake or rock.
          */
-        void createFoodIfNecessary () {
+        void createFoodIfNecessary() {
             //if snake ate food, create new one
             if (food == null) {
                 food = foodFactory.newInstance();
@@ -112,7 +112,7 @@ public class Garden {
         /**
          * Creates a Rock if there isn't one, making sure it's not already on a Square occupied by the Snake or food.
          */
-        void createRockIfNecessary () {
+        void createRockIfNecessary() {
             //if snake ate food, create additional rock
             if (rockCount > rockListManipulator.getRocks().size()) {
                 rockListManipulator.addRock();
@@ -133,7 +133,7 @@ public class Garden {
      /*
      *Plays sound from.wav file found in resources folder
      */
-        private void playSound () {
+        private void playSound() {
             try {
                 clip.setMicrosecondPosition(0); //restart clip
                 clip.start();

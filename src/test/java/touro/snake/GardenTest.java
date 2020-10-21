@@ -94,5 +94,7 @@ public class GardenTest {
 
         //then
         verify(clip).start();
+
+
     }
 }
