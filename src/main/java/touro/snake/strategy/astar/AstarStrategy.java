@@ -16,8 +16,10 @@ public class AstarStrategy implements SnakeStrategy {
         Square head = snake.getHead();
 
         Node currentNode = new Node(head);
-        Node goalNode = new Node(food);
-
+        Node goalNode;
+        if (food != null) {
+            goalNode = new Node(food);
+        } else return;
         ArrayList<Node> open = new ArrayList<>();
         ArrayList<Node> closed = new ArrayList<>();
 
@@ -37,16 +39,16 @@ public class AstarStrategy implements SnakeStrategy {
 
             for (int i = 0; i < directions.length; i++) {
                 Direction direction = directions[i];
-                Node successorNode = (Node) head.moveTo(directions[i]);
+                Square adjacentSquare = node.moveTo(directions[i]);
+                Node successorNode = (Node) adjacentSquare;
                 if (snake.canTurnTo(direction) && !closed.contains(successorNode)) {
-                    if(!open.contains(successorNode)){
+                    if (!open.contains(successorNode)) {
                         open.add(successorNode);
                         currentNode = parent;
                         if (successorNode.getCost() < lowestNode.getCost()) {
                             lowestNode = successorNode;
                         }
-                    }
-                    else {
+                    } else {
                         if (successorNode.getCost() < lowestNode.getCost()) {
                             lowestNode = successorNode;
                         }
