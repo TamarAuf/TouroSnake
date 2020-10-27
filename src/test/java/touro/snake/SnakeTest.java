@@ -1,8 +1,6 @@
 package touro.snake;
 
-import net.bytebuddy.dynamic.loading.InjectionClassLoader;
 import org.junit.Test;
-import touro.snake.strategy.BlankStrategy;
 import touro.snake.strategy.SnakeStrategy;
 
 import java.util.ArrayList;
