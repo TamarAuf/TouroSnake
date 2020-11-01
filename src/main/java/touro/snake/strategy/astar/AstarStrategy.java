@@ -40,7 +40,7 @@ public class AstarStrategy implements SnakeStrategy {
                 break;
             }
 
-            List<Node> neighbors = findNeighbors(snake, currentNode);
+            List<Node> neighbors = findNeighbors(snake, currentNode, food);
 
             for (Node neighbor : neighbors) {
                 if (closed.contains(neighbor) || !neighbor.inBounds() || snake.contains(neighbor)) continue;
@@ -67,12 +67,12 @@ public class AstarStrategy implements SnakeStrategy {
         return currentNode;
     }
 
-    public List<Node> findNeighbors(Snake snake, Node currentNode) {
+    public List<Node> findNeighbors(Snake snake, Node currentNode, Food food) {
         List<Node> neighbors = new ArrayList<>();
         Direction[] directions = Direction.values();
         for (Direction direction : directions) {
             if (snake.canTurnTo(direction)) {
-                Node node = new Node(currentNode.moveTo(direction));
+                Node node = new Node(currentNode.moveTo(direction), currentNode, food);
                 neighbors.add(node);
             }
         }
