@@ -4,6 +4,7 @@ import touro.snake.*;
 import touro.snake.strategy.SnakeStrategy;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * An implementation of SnakeStrategy based on A*.
@@ -11,51 +12,54 @@ import java.util.ArrayList;
 public class AstarStrategy implements SnakeStrategy {
     @Override
     public void turnSnake(Snake snake, Garden garden) {
-        Direction[] directions = Direction.values();
         Square food = garden.getFood();
         Square head = snake.getHead();
 
-        Node currentNode = new Node(head);
-        Node goalNode;
+        Node startNode = new Node(head);
+        Node targetNode;
         if (food != null) {
-            goalNode = new Node(food);
+            targetNode = new Node(food);
         } else return;
+
         ArrayList<Node> open = new ArrayList<>();
         ArrayList<Node> closed = new ArrayList<>();
 
-        Node node = new Node(head, currentNode, food);
-        Node parent = node.getParent();
-        open.add(parent);
+        open.add(startNode);
+        Node currentNode = open.get(0);
 
-        Node lowestNode = open.get(0);
-
-        while (!currentNode.equals(goalNode) || !open.isEmpty()) {
+        while (!currentNode.equals(targetNode) || !open.isEmpty()) {
             for (Node possibleNode : open) {
-                if (possibleNode.getCost() < lowestNode.getCost()) {
-                    lowestNode = possibleNode;
+                if (possibleNode.getCost() < currentNode.getCost()) {
+                    currentNode = possibleNode;
                 }
             }
-            closed.add(lowestNode);
+            open.remove(currentNode);
+            closed.add(currentNode);
 
-            for (int i = 0; i < directions.length; i++) {
-                Direction direction = directions[i];
-                Square adjacentSquare = node.moveTo(directions[i]);
-                Node successorNode = (Node) adjacentSquare;
-                if (snake.canTurnTo(direction) && !closed.contains(successorNode)) {
-                    if (!open.contains(successorNode)) {
-                        open.add(successorNode);
-                        currentNode = parent;
-                        if (successorNode.getCost() < lowestNode.getCost()) {
-                            lowestNode = successorNode;
-                        }
-                    } else {
-                        if (successorNode.getCost() < lowestNode.getCost()) {
-                            lowestNode = successorNode;
-                        }
-                        Node newNode = new Node(lowestNode, currentNode, food);
-                    }
+            if (currentNode.equals(targetNode)) return;
+
+            List<Node> neighbors = findNeighbors(snake, currentNode);
+
+            for(Node neighbor : neighbors){
+                if(closed.contains(neighbor)) continue;
+
+                if(!open.contains(neighbor)){
+                    Node newNode = new Node(neighbor, currentNode, targetNode);
+                    open.add(neighbor);
                 }
             }
         }
+    }
+
+    public List<Node> findNeighbors(Snake snake, Node currentNode) {
+        List<Node> neighbors = new ArrayList<>();
+        Direction[] directions = Direction.values();
+        for (Direction direction : directions) {
+            if (snake.canTurnTo(direction)) {
+                Node node = new Node(currentNode.moveTo(direction));
+                neighbors.add(node);
+            }
+        }
+        return neighbors;
     }
 }
