@@ -13,7 +13,8 @@ public class SnakeMain {
         // Set up all class dependencies here.
 
         SnakeHeadStateMachine snakeHeadStateMachine = new SnakeHeadStateMachine(Direction.West);
-        Snake snake = new Snake(snakeHeadStateMachine, new AstarStrategy());
+        AstarStrategy astar = new AstarStrategy();
+        Snake snake = new Snake(snakeHeadStateMachine, astar);
         FoodFactory foodFactory = new FoodFactory();
         try {
             InputStream inputStream = Garden.class.getClassLoader().getResourceAsStream("EatNoise.wav");
@@ -21,7 +22,7 @@ public class SnakeMain {
             Clip clip = AudioSystem.getClip();
             clip.open(audioIn);
             Garden garden = new Garden(snake, foodFactory, clip);
-            GardenView gardenView = new GardenView(garden);
+            GardenView gardenView = new GardenView(garden, astar);
             SnakeKeyListener snakeKeyListener = new SnakeKeyListener(snake);
 
             GardenThread thread = new GardenThread(garden, gardenView);
