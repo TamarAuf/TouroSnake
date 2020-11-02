@@ -22,6 +22,8 @@ public class GardenView extends JComponent {
         paintGrass(g);
         paintFood(g);
         paintSnake(g);
+        paintPath(g);
+        paintSearchSpace(g);
     }
 
     void paintGrass(Graphics g) {
@@ -33,7 +35,7 @@ public class GardenView extends JComponent {
     void paintSnake(Graphics g) {
         g.setColor(Color.RED);
         for (Square s : garden.getSnake().getSquares()) {
-            g.fillRect(s.getX()*CELL_SIZE, s.getY()*CELL_SIZE, CELL_SIZE, CELL_SIZE);
+            g.fillRect(s.getX() * CELL_SIZE, s.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
         }
     }
 
@@ -48,9 +50,23 @@ public class GardenView extends JComponent {
             g.fillRect(x, y, CELL_SIZE, CELL_SIZE);
         }
     }
-    /*
-    void paintPath(Graphics g){
+
+    void paintPath(Graphics g) {
         g.setColor(Color.CYAN);
-        for(Square s : AstarStrategy)
-    }*/
+        for (Square s : astar.getPath()) {
+            if (!garden.getSnake().contains(s)) {
+                g.fillRect(s.getX() * CELL_SIZE, s.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+            }
+        }
+    }
+
+    void paintSearchSpace(Graphics g) {
+        g.setColor(Color.BLUE);
+        for (Square s : astar.getSearchSpace()) {
+            if (!garden.getSnake().contains(s)) {
+                g.fillRect(s.getX() * CELL_SIZE, s.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
+            }
+        }
+    }
+
 }

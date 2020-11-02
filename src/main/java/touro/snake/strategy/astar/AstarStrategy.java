@@ -12,6 +12,9 @@ import java.util.List;
  * An implementation of SnakeStrategy based on A*.
  */
 public class AstarStrategy implements SnakeStrategy {
+
+    List<Square> path = new ArrayList<>();
+    List<Square> searchSpace = new ArrayList<>();
     @Override
     public void turnSnake(Snake snake, Garden garden) {
         Food food = garden.getFood();
@@ -21,8 +24,8 @@ public class AstarStrategy implements SnakeStrategy {
             return;
         }
 
-        ArrayList<Node> open = new ArrayList<>();
-        ArrayList<Node> closed = new ArrayList<>();
+        List<Node> open = new ArrayList<>();
+        List<Node> closed = new ArrayList<>();
 
         Node foodNode = new Node(food);
         Node headNode = new Node(head);
@@ -37,6 +40,7 @@ public class AstarStrategy implements SnakeStrategy {
                 Node step = getStep(head, currentNode);
                 Direction direction = head.directionTo(step);
                 snake.turnTo(direction);
+                path.add(step);
                 break;
             }
 
@@ -51,13 +55,17 @@ public class AstarStrategy implements SnakeStrategy {
                     if (neighbor.getCost() < oldNeighbor.getCost()) {
                         open.remove(oldNeighbor);
                         open.add(neighbor);
+                        searchSpace.add(neighbor);
                     }
-                } else open.add(neighbor);
+                } else {
+                    open.add(neighbor);
+                    searchSpace.add(neighbor);
+                }
             }
         }
     }
 
-    public Node getLowestNode(List<Node> open) {
+    private Node getLowestNode(List<Node> open) {
         Node currentNode = open.get(0);
         for (Node possibleNode : open) {
             if (possibleNode.getCost() < currentNode.getCost()) {
@@ -67,7 +75,7 @@ public class AstarStrategy implements SnakeStrategy {
         return currentNode;
     }
 
-    public List<Node> findNeighbors(Snake snake, Node currentNode, Food food) {
+    private List<Node> findNeighbors(Snake snake, Node currentNode, Food food) {
         List<Node> neighbors = new ArrayList<>();
         Direction[] directions = Direction.values();
         for (Direction direction : directions) {
@@ -84,5 +92,13 @@ public class AstarStrategy implements SnakeStrategy {
             end = end.getParent();
         }
         return end;
+    }
+
+    public List<Square> getPath() {
+        return path;
+    }
+
+    public List<Square> getSearchSpace() {
+        return searchSpace;
     }
 }
