@@ -13,7 +13,7 @@ import java.util.List;
  */
 public class AstarStrategy implements SnakeStrategy {
 
-    List<Node> path = new ArrayList<>();
+    List<Square> path = new ArrayList<>();
     List<Square> searchSpace = new ArrayList<>();
     @Override
     public void turnSnake(Snake snake, Garden garden) {
@@ -81,13 +81,12 @@ public class AstarStrategy implements SnakeStrategy {
     public Node getStep(Square head, Node currentNode) {
         Node end = currentNode;
         while (!end.getParent().equals(head)) {
-            path.add(end);
             end = end.getParent();
         }
         return end;
     }
 
-    public List<Node> getPath() {
+    public List<Square> getPath() {
         return path;
     }
 
