@@ -38,7 +38,6 @@ public class AstarStrategy implements SnakeStrategy {
             open.remove(currentNode);
             closed.add(currentNode);
             searchSpace.remove(currentNode);
-            path.add(currentNode);
 
             if (currentNode.equals(targetNode)) {
                 Node step = getStep(head, currentNode);
