@@ -54,7 +54,7 @@ public class GardenView extends JComponent {
     void paintPath(Graphics g) {
         g.setColor(Color.CYAN);
         for (Square s : astar.getPath()) {
-            if (!garden.getSnake().contains(s)) {
+            if (!garden.getSnake().contains(s) && !s.equals(garden.getFood())) {
                 g.fillRect(s.getX() * CELL_SIZE, s.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
             }
         }
@@ -63,7 +63,7 @@ public class GardenView extends JComponent {
     void paintSearchSpace(Graphics g) {
         g.setColor(Color.BLUE);
         for (Square s : astar.getSearchSpace()) {
-            if (!garden.getSnake().contains(s)) {
+            if (!garden.getSnake().contains(s) && !s.equals(garden.getFood())) {
                 g.fillRect(s.getX() * CELL_SIZE, s.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
             }
         }

@@ -13,10 +13,12 @@ import java.util.List;
  */
 public class AstarStrategy implements SnakeStrategy {
 
-    List<Square> path = new ArrayList<>();
+    List<Node> path = new ArrayList<>();
     List<Square> searchSpace = new ArrayList<>();
     @Override
     public void turnSnake(Snake snake, Garden garden) {
+
+        Direction[] directions = Direction.values();
         Food food = garden.getFood();
         Square head = snake.getHead();
 
@@ -27,7 +29,7 @@ public class AstarStrategy implements SnakeStrategy {
         List<Node> open = new ArrayList<>();
         List<Node> closed = new ArrayList<>();
 
-        Node foodNode = new Node(food);
+        Node targetNode = new Node(food);
         Node headNode = new Node(head);
         open.add(headNode);
 
@@ -35,8 +37,10 @@ public class AstarStrategy implements SnakeStrategy {
             Node currentNode = getLowestNode(open);
             open.remove(currentNode);
             closed.add(currentNode);
+            searchSpace.remove(currentNode);
+            path.add(currentNode);
 
-            if (currentNode.equals(foodNode)) {
+            if (currentNode.equals(targetNode)) {
                 Node step = getStep(head, currentNode);
                 Direction direction = head.directionTo(step);
                 snake.turnTo(direction);
@@ -44,9 +48,8 @@ public class AstarStrategy implements SnakeStrategy {
                 break;
             }
 
-            List<Node> neighbors = findNeighbors(snake, currentNode, food);
-
-            for (Node neighbor : neighbors) {
+            for (Direction direction : directions) {
+                Node neighbor = new Node(currentNode.moveTo(direction), currentNode, targetNode);
                 if (closed.contains(neighbor) || !neighbor.inBounds() || snake.contains(neighbor)) continue;
 
                 if (open.contains(neighbor)) {
@@ -75,26 +78,16 @@ public class AstarStrategy implements SnakeStrategy {
         return currentNode;
     }
 
-    private List<Node> findNeighbors(Snake snake, Node currentNode, Food food) {
-        List<Node> neighbors = new ArrayList<>();
-        Direction[] directions = Direction.values();
-        for (Direction direction : directions) {
-            if (snake.canTurnTo(direction)) {
-                Node node = new Node(currentNode.moveTo(direction), currentNode, food);
-                neighbors.add(node);
-            }
-        }
-        return neighbors;
-    }
-
-    public Node getStep(Square head, Node end) {
+    public Node getStep(Square head, Node currentNode) {
+        Node end = currentNode;
         while (!end.getParent().equals(head)) {
+            path.add(end);
             end = end.getParent();
         }
         return end;
     }
 
-    public List<Square> getPath() {
+    public List<Node> getPath() {
         return path;
     }
 
