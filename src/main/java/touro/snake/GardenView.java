@@ -8,12 +8,10 @@ import java.awt.*;
 public class GardenView extends JComponent {
 
     private final Garden garden;
-    private final AstarStrategy astar;
     public static final int CELL_SIZE = 10;
 
-    public GardenView(Garden garden, AstarStrategy astar) {
+    public GardenView(Garden garden) {
         this.garden = garden;
-        this.astar = astar;
     }
 
     @Override
@@ -53,7 +51,7 @@ public class GardenView extends JComponent {
 
     void paintPath(Graphics g) {
         g.setColor(Color.CYAN);
-        for (Square s : astar.getPath()) {
+        for (Square s : garden.getSnake().getStrategy().getPath()) {
             if (!garden.getSnake().contains(s) && !s.equals(garden.getFood())) {
                 g.fillRect(s.getX() * CELL_SIZE, s.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
             }
@@ -62,8 +60,8 @@ public class GardenView extends JComponent {
 
     void paintSearchSpace(Graphics g) {
         g.setColor(Color.BLUE);
-        for (Square s : astar.getSearchSpace()) {
-            if (!garden.getSnake().contains(s) && !s.equals(garden.getFood()) && !astar.getPath().contains(s)) {
+        for (Square s : garden.getSnake().getStrategy().getSearchSpace()) {
+            if (!garden.getSnake().contains(s) && !s.equals(garden.getFood()) && !garden.getSnake().getStrategy().getPath().contains(s)) {
                 g.fillRect(s.getX() * CELL_SIZE, s.getY() * CELL_SIZE, CELL_SIZE, CELL_SIZE);
             }
         }

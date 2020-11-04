@@ -33,17 +33,19 @@ public class AstarStrategy implements SnakeStrategy {
         Node headNode = new Node(head);
         open.add(headNode);
 
+        searchSpace.clear();
+        path.clear();
+
         while (!open.isEmpty()) {
+
             Node currentNode = getLowestNode(open);
             open.remove(currentNode);
             closed.add(currentNode);
-            searchSpace.remove(currentNode);
 
             if (currentNode.equals(targetNode)) {
                 Node step = getStep(head, currentNode);
                 Direction direction = head.directionTo(step);
                 snake.turnTo(direction);
-                path.add(step);
                 break;
             }
 
@@ -80,6 +82,7 @@ public class AstarStrategy implements SnakeStrategy {
     public Node getStep(Square head, Node currentNode) {
         Node end = currentNode;
         while (!end.getParent().equals(head)) {
+            path.add(end);
             end = end.getParent();
         }
         return end;
